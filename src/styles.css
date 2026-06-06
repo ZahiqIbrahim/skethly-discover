@@ -208,6 +208,31 @@
 .ink-btn-filled { position: relative; }
 .ink-btn-filled::before { content: none !important; }
 
+/* Hand-drawn ink outline that sketches itself around an element on hover */
+@utility sketch-outline-hover {
+  position: relative;
+}
+.sketch-outline-hover::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 400' preserveAspectRatio='none'><path d='M14,6 C 60,3 120,8 180,5 S 270,10 292,8 C 295,60 290,140 294,210 S 297,360 292,394 C 230,397 150,392 90,395 S 18,392 8,394 C 5,330 10,250 6,180 S 3,40 8,6 Z' fill='none' stroke='%231A2F6B' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round' stroke-dasharray='1800' stroke-dashoffset='1800'/></svg>");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.sketch-outline-hover:hover::after,
+.sketch-outline-hover:focus-visible::after {
+  opacity: 1;
+  animation: sketch-draw 0.5s ease-out forwards;
+}
+@keyframes sketch-draw {
+  from { clip-path: inset(0 100% 0 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+
 
 @utility dashed-frame {
   border: 1.5px dashed var(--ink);
