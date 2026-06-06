@@ -62,14 +62,14 @@ function Index() {
       <section className="py-10">
         <div className="flex items-baseline justify-between mb-6">
           <h2 className="font-brush text-3xl">Explore by</h2>
-          <Link to="/explore" className="font-hand text-sm underline underline-offset-4">View all</Link>
+          <Link to="/explore" className="sketch-hover font-hand text-sm underline underline-offset-4 px-2 py-1">View all</Link>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
           {categories.map(({ label, Icon }, i) => (
             <Link
               key={label}
               to="/explore"
-              className="sketch-border lift-hover p-5 flex flex-col items-center gap-3 text-center fade-up"
+              className="sketch-border lift-hover sketch-hover p-5 flex flex-col items-center gap-3 text-center fade-up"
               style={{ animationDelay: `${i * 60}ms` }}
             >
               <Icon size={36} strokeWidth={1.4} className="text-ink" />
@@ -85,14 +85,14 @@ function Index() {
       <section className="py-10">
         <div className="flex items-baseline justify-between mb-6">
           <h2 className="font-brush text-3xl">Let AI recommend for your mood</h2>
-          <Link to="/recommend" className="font-hand text-sm underline underline-offset-4">View all</Link>
+          <Link to="/recommend" className="sketch-hover font-hand text-sm underline underline-offset-4 px-2 py-1">View all</Link>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
           {moods.map((m, i) => (
             <Link
               to="/recommend"
               key={m.label}
-              className="sketch-border lift-hover p-4 flex flex-col gap-3 fade-up"
+              className="sketch-border lift-hover sketch-hover p-4 flex flex-col gap-3 fade-up"
               style={{ animationDelay: `${i * 70}ms` }}
             >
               <SketchPlaceholder label={m.art} className="aspect-[4/3]" />

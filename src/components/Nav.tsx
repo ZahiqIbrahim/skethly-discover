@@ -21,8 +21,8 @@ export function Nav() {
             <Link
               key={l.to}
               to={l.to}
-              className="font-hand text-base text-ink hover:text-ink-accent"
-              activeProps={{ className: "font-hand text-base text-ink underline decoration-1 underline-offset-4" }}
+              className="sketch-hover font-hand text-base text-ink hover:text-ink-accent px-2 py-1"
+              activeProps={{ className: "sketch-hover font-hand text-base text-ink underline decoration-1 underline-offset-4 px-2 py-1" }}
               activeOptions={{ exact: l.to === "/" }}
             >
               {l.label}
@@ -30,7 +30,7 @@ export function Nav() {
           ))}
         </nav>
         <div className="ml-auto md:ml-0 flex items-center gap-3">
-          <Link to="/about" className="font-hand text-sm hidden sm:inline">Log in</Link>
+          <Link to="/about" className="sketch-hover font-hand text-sm hidden sm:inline px-2 py-1">Log in</Link>
           <button type="button" className="ink-btn text-sm">Sign up</button>
         </div>
       </div>
