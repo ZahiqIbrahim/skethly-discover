@@ -69,7 +69,7 @@ function Index() {
             <Link
               key={label}
               to="/explore"
-              className="sketch-border lift-hover sketch-hover p-5 flex flex-col items-center gap-3 text-center fade-up"
+              className="sketch-border lift-hover p-5 flex flex-col items-center gap-3 text-center fade-up"
               style={{ animationDelay: `${i * 60}ms` }}
             >
               <Icon size={36} strokeWidth={1.4} className="text-ink" />
@@ -92,7 +92,7 @@ function Index() {
             <Link
               to="/recommend"
               key={m.label}
-              className="sketch-border lift-hover sketch-hover p-4 flex flex-col gap-3 fade-up"
+              className="sketch-border lift-hover p-4 flex flex-col gap-3 fade-up"
               style={{ animationDelay: `${i * 70}ms` }}
             >
               <SketchPlaceholder label={m.art} className="aspect-[4/3]" />
