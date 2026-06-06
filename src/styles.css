@@ -136,6 +136,7 @@
   box-shadow: 3px 3px 0 rgba(26,47,107,0.15);
   transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
   cursor: pointer;
+  position: relative;
 }
 @utility ink-btn-filled {
   display: inline-flex; align-items: center; gap: 0.5rem;
