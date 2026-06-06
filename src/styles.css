@@ -159,39 +159,50 @@
 .ink-btn:hover { background: var(--card); }
 .ink-btn-filled:hover { background: var(--ink-accent); color: var(--background); }
 
-/* Sketch-around hover animation */
+/* Hand-drawn sketch outline (revealed left→right on hover, like an ink pen drawing it) */
+@utility sketch-hover {
+  position: relative;
+}
+.sketch-hover::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 100' preserveAspectRatio='none'><g fill='none' stroke='%231A2F6B' stroke-linecap='round' stroke-linejoin='round'><path d='M5,7 C40,4 90,9 150,5 C175,4 192,6 196,8 C198,30 195,58 197,92 C196,95 180,97 140,96 C90,95 40,98 6,95 C3,70 7,40 4,10 Z' stroke-width='1.6'/><path d='M8,10 C60,7 130,12 192,9 M194,14 C196,40 193,70 195,90 M190,93 C140,95 60,92 9,94 M6,90 C4,60 8,30 6,12' stroke-width='0.9' opacity='0.55'/></g></svg>");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 0.55s cubic-bezier(0.65, 0.05, 0.36, 1);
+}
+.sketch-hover:hover::after,
+.sketch-hover:focus-visible::after {
+  clip-path: inset(0 0 0 0);
+}
+/* Filled buttons use a cream-colored sketch line to remain visible on dark ink bg */
+.ink-btn-filled.sketch-hover::after,
+.sketch-hover-light::after {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 100' preserveAspectRatio='none'><g fill='none' stroke='%23F5F0E8' stroke-linecap='round' stroke-linejoin='round'><path d='M5,7 C40,4 90,9 150,5 C175,4 192,6 196,8 C198,30 195,58 197,92 C196,95 180,97 140,96 C90,95 40,98 6,95 C3,70 7,40 4,10 Z' stroke-width='1.6'/><path d='M8,10 C60,7 130,12 192,9 M194,14 C196,40 193,70 195,90 M190,93 C140,95 60,92 9,94 M6,90 C4,60 8,30 6,12' stroke-width='0.9' opacity='0.55'/></g></svg>");
+}
+
+/* Auto-apply sketch hover to all interactive ink elements */
+.ink-btn, .ink-btn-filled { position: relative; }
 .ink-btn::after, .ink-btn-filled::after {
   content: "";
   position: absolute;
-  inset: -5px;
-  border: 2px dashed var(--ink);
-  border-radius: 28px 24px 30px 26px;
-  opacity: 0;
-  transform: scale(0.92) rotate(-1.5deg);
-  transition: opacity 0.35s ease, transform 0.35s ease;
+  inset: -6px;
   pointer-events: none;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 0.55s cubic-bezier(0.65, 0.05, 0.36, 1);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 100' preserveAspectRatio='none'><g fill='none' stroke='%231A2F6B' stroke-linecap='round' stroke-linejoin='round'><path d='M5,7 C40,4 90,9 150,5 C175,4 192,6 196,8 C198,30 195,58 197,92 C196,95 180,97 140,96 C90,95 40,98 6,95 C3,70 7,40 4,10 Z' stroke-width='1.6'/><path d='M8,10 C60,7 130,12 192,9 M194,14 C196,40 193,70 195,90 M190,93 C140,95 60,92 9,94 M6,90 C4,60 8,30 6,12' stroke-width='0.9' opacity='0.55'/></g></svg>");
 }
-.ink-btn-filled::after { border-color: var(--background); }
-.ink-btn:hover::after, .ink-btn-filled:hover::after {
-  opacity: 0.5;
-  transform: scale(1) rotate(0.5deg);
+.ink-btn-filled::after {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 100' preserveAspectRatio='none'><g fill='none' stroke='%23F5F0E8' stroke-linecap='round' stroke-linejoin='round'><path d='M5,7 C40,4 90,9 150,5 C175,4 192,6 196,8 C198,30 195,58 197,92 C196,95 180,97 140,96 C90,95 40,98 6,95 C3,70 7,40 4,10 Z' stroke-width='1.6'/><path d='M8,10 C60,7 130,12 192,9 M194,14 C196,40 193,70 195,90 M190,93 C140,95 60,92 9,94 M6,90 C4,60 8,30 6,12' stroke-width='0.9' opacity='0.55'/></g></svg>");
 }
-
-/* Sketch-in fill animation for outline buttons */
-.ink-btn::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 0; width: 100%; height: 100%;
-  background: var(--ink);
-  opacity: 0;
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.4s ease, opacity 0.4s ease;
-  border-radius: 22px 18px 24px 20px;
-}
-.ink-btn:hover::before {
-  opacity: 0.05;
-  transform: scaleX(1);
+.ink-btn:hover::after, .ink-btn:focus-visible::after,
+.ink-btn-filled:hover::after, .ink-btn-filled:focus-visible::after {
+  clip-path: inset(0 0 0 0);
 }
 
 @utility dashed-frame {
