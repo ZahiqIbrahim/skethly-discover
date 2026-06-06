@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as RecommendRouteImport } from './routes/recommend'
 import { Route as ExploreRouteImport } from './routes/explore'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
@@ -16,6 +17,11 @@ import { Route as CommunitiesIndexRouteImport } from './routes/communities.index
 import { Route as ItemIdRouteImport } from './routes/item.$id'
 import { Route as CommunitiesIdRouteImport } from './routes/communities.$id'
 
+const RecommendRoute = RecommendRouteImport.update({
+  id: '/recommend',
+  path: '/recommend',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ExploreRoute = ExploreRouteImport.update({
   id: '/explore',
   path: '/explore',
@@ -51,6 +57,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/explore': typeof ExploreRoute
+  '/recommend': typeof RecommendRoute
   '/communities/$id': typeof CommunitiesIdRoute
   '/item/$id': typeof ItemIdRoute
   '/communities/': typeof CommunitiesIndexRoute
@@ -59,6 +66,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/explore': typeof ExploreRoute
+  '/recommend': typeof RecommendRoute
   '/communities/$id': typeof CommunitiesIdRoute
   '/item/$id': typeof ItemIdRoute
   '/communities': typeof CommunitiesIndexRoute
@@ -68,6 +76,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/explore': typeof ExploreRoute
+  '/recommend': typeof RecommendRoute
   '/communities/$id': typeof CommunitiesIdRoute
   '/item/$id': typeof ItemIdRoute
   '/communities/': typeof CommunitiesIndexRoute
@@ -78,6 +87,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/explore'
+    | '/recommend'
     | '/communities/$id'
     | '/item/$id'
     | '/communities/'
@@ -86,6 +96,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/explore'
+    | '/recommend'
     | '/communities/$id'
     | '/item/$id'
     | '/communities'
@@ -94,6 +105,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/explore'
+    | '/recommend'
     | '/communities/$id'
     | '/item/$id'
     | '/communities/'
@@ -103,6 +115,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   ExploreRoute: typeof ExploreRoute
+  RecommendRoute: typeof RecommendRoute
   CommunitiesIdRoute: typeof CommunitiesIdRoute
   ItemIdRoute: typeof ItemIdRoute
   CommunitiesIndexRoute: typeof CommunitiesIndexRoute
@@ -110,6 +123,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/recommend': {
+      id: '/recommend'
+      path: '/recommend'
+      fullPath: '/recommend'
+      preLoaderRoute: typeof RecommendRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/explore': {
       id: '/explore'
       path: '/explore'
@@ -159,6 +179,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   ExploreRoute: ExploreRoute,
+  RecommendRoute: RecommendRoute,
   CommunitiesIdRoute: CommunitiesIdRoute,
   ItemIdRoute: ItemIdRoute,
   CommunitiesIndexRoute: CommunitiesIndexRoute,
