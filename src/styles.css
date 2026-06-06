@@ -159,49 +159,53 @@
 .ink-btn:hover { background: var(--card); }
 .ink-btn-filled:hover { background: var(--ink-accent); color: var(--background); }
 
-/* Hand-drawn sketch outline (revealed left→right on hover, like an ink pen drawing it) */
+/* Hand-drawn "scribble fill" hover — diagonal ink hatching sweeps in to fill the element */
 @utility sketch-hover {
   position: relative;
+  isolation: isolate;
+  overflow: hidden;
 }
-.sketch-hover::after {
+.sketch-hover::before {
   content: "";
   position: absolute;
-  inset: -6px;
+  inset: 0;
+  z-index: -1;
   pointer-events: none;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 100' preserveAspectRatio='none'><g fill='none' stroke='%231A2F6B' stroke-linecap='round' stroke-linejoin='round'><path d='M5,7 C40,4 90,9 150,5 C175,4 192,6 196,8 C198,30 195,58 197,92 C196,95 180,97 140,96 C90,95 40,98 6,95 C3,70 7,40 4,10 Z' stroke-width='1.6'/><path d='M8,10 C60,7 130,12 192,9 M194,14 C196,40 193,70 195,90 M190,93 C140,95 60,92 9,94 M6,90 C4,60 8,30 6,12' stroke-width='0.9' opacity='0.55'/></g></svg>");
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='120' viewBox='0 0 240 120' preserveAspectRatio='none'><g fill='none' stroke='%231A2F6B' stroke-width='1.2' stroke-linecap='round' opacity='0.9'><path d='M-20,10 L30,-20'/><path d='M-20,28 L50,-20'/><path d='M-20,46 L70,-20'/><path d='M-20,64 L90,-20'/><path d='M-20,82 L110,-20'/><path d='M-20,100 L130,-20'/><path d='M-20,118 L150,-20'/><path d='M-5,135 L170,-20'/><path d='M15,135 L190,-20'/><path d='M35,135 L210,-20'/><path d='M55,135 L230,-20'/><path d='M75,135 L250,-20'/><path d='M95,135 L260,-5'/><path d='M115,135 L260,15'/><path d='M135,135 L260,35'/><path d='M155,135 L260,55'/><path d='M175,135 L260,75'/><path d='M195,135 L260,95'/><path d='M215,135 L260,115'/></g></svg>");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   clip-path: inset(0 100% 0 0);
-  transition: clip-path 0.55s cubic-bezier(0.65, 0.05, 0.36, 1);
+  transition: clip-path 0.6s cubic-bezier(0.65, 0.05, 0.36, 1);
 }
-.sketch-hover:hover::after,
-.sketch-hover:focus-visible::after {
+.sketch-hover:hover::before,
+.sketch-hover:focus-visible::before {
   clip-path: inset(0 0 0 0);
 }
-/* Filled buttons use a cream-colored sketch line to remain visible on dark ink bg */
-.ink-btn-filled.sketch-hover::after,
-.sketch-hover-light::after {
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 100' preserveAspectRatio='none'><g fill='none' stroke='%23F5F0E8' stroke-linecap='round' stroke-linejoin='round'><path d='M5,7 C40,4 90,9 150,5 C175,4 192,6 196,8 C198,30 195,58 197,92 C196,95 180,97 140,96 C90,95 40,98 6,95 C3,70 7,40 4,10 Z' stroke-width='1.6'/><path d='M8,10 C60,7 130,12 192,9 M194,14 C196,40 193,70 195,90 M190,93 C140,95 60,92 9,94 M6,90 C4,60 8,30 6,12' stroke-width='0.9' opacity='0.55'/></g></svg>");
+/* Filled buttons / dark surfaces: cream-colored scribble */
+.ink-btn-filled.sketch-hover::before,
+.sketch-hover-light::before {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='120' viewBox='0 0 240 120' preserveAspectRatio='none'><g fill='none' stroke='%23F5F0E8' stroke-width='1.2' stroke-linecap='round' opacity='0.9'><path d='M-20,10 L30,-20'/><path d='M-20,28 L50,-20'/><path d='M-20,46 L70,-20'/><path d='M-20,64 L90,-20'/><path d='M-20,82 L110,-20'/><path d='M-20,100 L130,-20'/><path d='M-20,118 L150,-20'/><path d='M-5,135 L170,-20'/><path d='M15,135 L190,-20'/><path d='M35,135 L210,-20'/><path d='M55,135 L230,-20'/><path d='M75,135 L250,-20'/><path d='M95,135 L260,-5'/><path d='M115,135 L260,15'/><path d='M135,135 L260,35'/><path d='M155,135 L260,55'/><path d='M175,135 L260,75'/><path d='M195,135 L260,95'/><path d='M215,135 L260,115'/></g></svg>");
 }
 
-/* Auto-apply sketch hover to all interactive ink elements */
-.ink-btn, .ink-btn-filled { position: relative; }
-.ink-btn::after, .ink-btn-filled::after {
+/* Auto-apply scribble fill to ink buttons */
+.ink-btn, .ink-btn-filled { position: relative; isolation: isolate; overflow: hidden; }
+.ink-btn::before, .ink-btn-filled::before {
   content: "";
   position: absolute;
-  inset: -6px;
+  inset: 0;
+  z-index: -1;
   pointer-events: none;
   background-size: 100% 100%;
   background-repeat: no-repeat;
   clip-path: inset(0 100% 0 0);
-  transition: clip-path 0.55s cubic-bezier(0.65, 0.05, 0.36, 1);
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 100' preserveAspectRatio='none'><g fill='none' stroke='%231A2F6B' stroke-linecap='round' stroke-linejoin='round'><path d='M5,7 C40,4 90,9 150,5 C175,4 192,6 196,8 C198,30 195,58 197,92 C196,95 180,97 140,96 C90,95 40,98 6,95 C3,70 7,40 4,10 Z' stroke-width='1.6'/><path d='M8,10 C60,7 130,12 192,9 M194,14 C196,40 193,70 195,90 M190,93 C140,95 60,92 9,94 M6,90 C4,60 8,30 6,12' stroke-width='0.9' opacity='0.55'/></g></svg>");
+  transition: clip-path 0.6s cubic-bezier(0.65, 0.05, 0.36, 1);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='120' viewBox='0 0 240 120' preserveAspectRatio='none'><g fill='none' stroke='%231A2F6B' stroke-width='1.2' stroke-linecap='round' opacity='0.9'><path d='M-20,10 L30,-20'/><path d='M-20,28 L50,-20'/><path d='M-20,46 L70,-20'/><path d='M-20,64 L90,-20'/><path d='M-20,82 L110,-20'/><path d='M-20,100 L130,-20'/><path d='M-20,118 L150,-20'/><path d='M-5,135 L170,-20'/><path d='M15,135 L190,-20'/><path d='M35,135 L210,-20'/><path d='M55,135 L230,-20'/><path d='M75,135 L250,-20'/><path d='M95,135 L260,-5'/><path d='M115,135 L260,15'/><path d='M135,135 L260,35'/><path d='M155,135 L260,55'/><path d='M175,135 L260,75'/><path d='M195,135 L260,95'/><path d='M215,135 L260,115'/></g></svg>");
 }
-.ink-btn-filled::after {
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 100' preserveAspectRatio='none'><g fill='none' stroke='%23F5F0E8' stroke-linecap='round' stroke-linejoin='round'><path d='M5,7 C40,4 90,9 150,5 C175,4 192,6 196,8 C198,30 195,58 197,92 C196,95 180,97 140,96 C90,95 40,98 6,95 C3,70 7,40 4,10 Z' stroke-width='1.6'/><path d='M8,10 C60,7 130,12 192,9 M194,14 C196,40 193,70 195,90 M190,93 C140,95 60,92 9,94 M6,90 C4,60 8,30 6,12' stroke-width='0.9' opacity='0.55'/></g></svg>");
+.ink-btn-filled::before {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='120' viewBox='0 0 240 120' preserveAspectRatio='none'><g fill='none' stroke='%23F5F0E8' stroke-width='1.2' stroke-linecap='round' opacity='0.9'><path d='M-20,10 L30,-20'/><path d='M-20,28 L50,-20'/><path d='M-20,46 L70,-20'/><path d='M-20,64 L90,-20'/><path d='M-20,82 L110,-20'/><path d='M-20,100 L130,-20'/><path d='M-20,118 L150,-20'/><path d='M-5,135 L170,-20'/><path d='M15,135 L190,-20'/><path d='M35,135 L210,-20'/><path d='M55,135 L230,-20'/><path d='M75,135 L250,-20'/><path d='M95,135 L260,-5'/><path d='M115,135 L260,15'/><path d='M135,135 L260,35'/><path d='M155,135 L260,55'/><path d='M175,135 L260,75'/><path d='M195,135 L260,95'/><path d='M215,135 L260,115'/></g></svg>");
 }
-.ink-btn:hover::after, .ink-btn:focus-visible::after,
-.ink-btn-filled:hover::after, .ink-btn-filled:focus-visible::after {
+.ink-btn:hover::before, .ink-btn:focus-visible::before,
+.ink-btn-filled:hover::before, .ink-btn-filled:focus-visible::before {
   clip-path: inset(0 0 0 0);
 }
 
