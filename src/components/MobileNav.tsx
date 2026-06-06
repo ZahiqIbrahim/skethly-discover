@@ -15,7 +15,7 @@ export function MobileNav() {
         <Link
           key={to}
           to={to}
-          className="flex-1 flex flex-col items-center gap-0.5 py-1 font-hand text-[11px] text-ink"
+          className="sketch-hover flex-1 flex flex-col items-center gap-0.5 py-1 font-hand text-[11px] text-ink"
           activeOptions={{ exact: to === "/" }}
         >
           <Icon size={20} strokeWidth={1.5} />
