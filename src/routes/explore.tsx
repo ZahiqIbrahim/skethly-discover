@@ -41,7 +41,7 @@ function Explore() {
             to="/item/$id"
             params={{ id: item.id }}
             key={item.id}
-            className="lift-hover space-y-2 fade-up"
+            className="sketch-outline-hover lift-hover space-y-2 fade-up p-2"
             style={{ animationDelay: `${i * 50}ms` }}
           >
             <CoverImage src={item.coverUrl} alt={item.title} />
