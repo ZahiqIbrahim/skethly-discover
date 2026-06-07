@@ -78,9 +78,9 @@
     inset: 0;
     pointer-events: none;
     z-index: 1;
-    opacity: 0.32;
+    opacity: 0.5;
     mix-blend-mode: multiply;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.10  0 0 0 0 0.18  0 0 0 0 0.42  0 0 0 0.5 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.10  0 0 0 0 0.18  0 0 0 0 0.42  0 0 0 0.55 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
   }
   /* Paper fiber lines */
   body::after {
@@ -89,12 +89,58 @@
     inset: 0;
     pointer-events: none;
     z-index: 1;
-    opacity: 0.14;
+    opacity: 0.24;
     mix-blend-mode: multiply;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'><filter id='f'><feTurbulence type='fractalNoise' baseFrequency='0.015 0.08' numOctaves='4' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%25' height='100%25' filter='url(%23f)' opacity='0.6'/></svg>");
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'><filter id='f'><feTurbulence type='fractalNoise' baseFrequency='0.015 0.08' numOctaves='4' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%25' height='100%25' filter='url(%23f)' opacity='0.7'/></svg>");
     background-size: 300px 300px;
   }
   #app, main, .layer-content { position: relative; z-index: 2; }
+
+  /* Paper texture on overlay surfaces (modals, dropdowns, sheets, popovers, mobile nav) */
+  [role="dialog"],
+  [role="alertdialog"],
+  [role="menu"],
+  [role="listbox"],
+  [data-radix-popper-content-wrapper] > *,
+  [data-sonner-toast],
+  .paper-surface {
+    isolation: isolate;
+  }
+  [role="dialog"]::before,
+  [role="alertdialog"]::before,
+  [role="menu"]::before,
+  [role="listbox"]::before,
+  [data-radix-popper-content-wrapper] > *::before,
+  [data-sonner-toast]::before,
+  .paper-surface::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.55;
+    mix-blend-mode: multiply;
+    border-radius: inherit;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.10  0 0 0 0 0.18  0 0 0 0 0.42  0 0 0 0.55 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  }
+  [role="dialog"]::after,
+  [role="alertdialog"]::after,
+  [role="menu"]::after,
+  [role="listbox"]::after,
+  [data-radix-popper-content-wrapper] > *::after,
+  [data-sonner-toast]::after,
+  .paper-surface::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.3;
+    mix-blend-mode: multiply;
+    border-radius: inherit;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'><filter id='f'><feTurbulence type='fractalNoise' baseFrequency='0.015 0.08' numOctaves='4' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%25' height='100%25' filter='url(%23f)' opacity='0.7'/></svg>");
+    background-size: 300px 300px;
+  }
 
   h1, h2, h3, h4, h5 { color: var(--ink); font-family: var(--font-brush); letter-spacing: 0.01em; }
 

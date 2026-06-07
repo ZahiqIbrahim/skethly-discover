@@ -10,7 +10,7 @@ const items = [
 
 export function MobileNav() {
   return (
-    <nav className="md:hidden fixed bottom-3 left-3 right-3 z-40 sketch-border bg-parchment-dark/95 backdrop-blur px-3 py-2 flex justify-between">
+    <nav className="paper-surface md:hidden fixed bottom-3 left-3 right-3 z-40 sketch-border bg-parchment-dark/95 backdrop-blur px-3 py-2 flex justify-between">
       {items.map(({ to, label, Icon }) => (
         <Link
           key={to}
