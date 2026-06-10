@@ -30,8 +30,8 @@ export function Nav() {
           ))}
         </nav>
         <div className="ml-auto md:ml-0 flex items-center gap-3">
-          <Link to="/about" className="sketch-hover font-hand text-sm hidden sm:inline px-2 py-1">Log in</Link>
-          <button type="button" className="ink-btn text-sm">Sign up</button>
+          <Link to="/auth/login" className="sketch-hover font-hand text-sm hidden sm:inline px-2 py-1">Log in</Link>
+          <Link to="/auth/signup" className="ink-btn text-sm">Sign up</Link>
         </div>
       </div>
     </header>

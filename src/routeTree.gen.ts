@@ -16,6 +16,9 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as CommunitiesIndexRouteImport } from './routes/communities.index'
 import { Route as ItemIdRouteImport } from './routes/item.$id'
 import { Route as CommunitiesIdRouteImport } from './routes/communities.$id'
+import { Route as AuthVerifyRouteImport } from './routes/auth.verify'
+import { Route as AuthSignupRouteImport } from './routes/auth.signup'
+import { Route as AuthLoginRouteImport } from './routes/auth.login'
 
 const RecommendRoute = RecommendRouteImport.update({
   id: '/recommend',
@@ -52,12 +55,30 @@ const CommunitiesIdRoute = CommunitiesIdRouteImport.update({
   path: '/communities/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthVerifyRoute = AuthVerifyRouteImport.update({
+  id: '/auth/verify',
+  path: '/auth/verify',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthSignupRoute = AuthSignupRouteImport.update({
+  id: '/auth/signup',
+  path: '/auth/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthLoginRoute = AuthLoginRouteImport.update({
+  id: '/auth/login',
+  path: '/auth/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/explore': typeof ExploreRoute
   '/recommend': typeof RecommendRoute
+  '/auth/login': typeof AuthLoginRoute
+  '/auth/signup': typeof AuthSignupRoute
+  '/auth/verify': typeof AuthVerifyRoute
   '/communities/$id': typeof CommunitiesIdRoute
   '/item/$id': typeof ItemIdRoute
   '/communities/': typeof CommunitiesIndexRoute
@@ -67,6 +88,9 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/explore': typeof ExploreRoute
   '/recommend': typeof RecommendRoute
+  '/auth/login': typeof AuthLoginRoute
+  '/auth/signup': typeof AuthSignupRoute
+  '/auth/verify': typeof AuthVerifyRoute
   '/communities/$id': typeof CommunitiesIdRoute
   '/item/$id': typeof ItemIdRoute
   '/communities': typeof CommunitiesIndexRoute
@@ -77,6 +101,9 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/explore': typeof ExploreRoute
   '/recommend': typeof RecommendRoute
+  '/auth/login': typeof AuthLoginRoute
+  '/auth/signup': typeof AuthSignupRoute
+  '/auth/verify': typeof AuthVerifyRoute
   '/communities/$id': typeof CommunitiesIdRoute
   '/item/$id': typeof ItemIdRoute
   '/communities/': typeof CommunitiesIndexRoute
@@ -88,6 +115,9 @@ export interface FileRouteTypes {
     | '/about'
     | '/explore'
     | '/recommend'
+    | '/auth/login'
+    | '/auth/signup'
+    | '/auth/verify'
     | '/communities/$id'
     | '/item/$id'
     | '/communities/'
@@ -97,6 +127,9 @@ export interface FileRouteTypes {
     | '/about'
     | '/explore'
     | '/recommend'
+    | '/auth/login'
+    | '/auth/signup'
+    | '/auth/verify'
     | '/communities/$id'
     | '/item/$id'
     | '/communities'
@@ -106,6 +139,9 @@ export interface FileRouteTypes {
     | '/about'
     | '/explore'
     | '/recommend'
+    | '/auth/login'
+    | '/auth/signup'
+    | '/auth/verify'
     | '/communities/$id'
     | '/item/$id'
     | '/communities/'
@@ -116,6 +152,9 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   ExploreRoute: typeof ExploreRoute
   RecommendRoute: typeof RecommendRoute
+  AuthLoginRoute: typeof AuthLoginRoute
+  AuthSignupRoute: typeof AuthSignupRoute
+  AuthVerifyRoute: typeof AuthVerifyRoute
   CommunitiesIdRoute: typeof CommunitiesIdRoute
   ItemIdRoute: typeof ItemIdRoute
   CommunitiesIndexRoute: typeof CommunitiesIndexRoute
@@ -172,6 +211,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CommunitiesIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth/verify': {
+      id: '/auth/verify'
+      path: '/auth/verify'
+      fullPath: '/auth/verify'
+      preLoaderRoute: typeof AuthVerifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/signup': {
+      id: '/auth/signup'
+      path: '/auth/signup'
+      fullPath: '/auth/signup'
+      preLoaderRoute: typeof AuthSignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/login': {
+      id: '/auth/login'
+      path: '/auth/login'
+      fullPath: '/auth/login'
+      preLoaderRoute: typeof AuthLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -180,6 +240,9 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   ExploreRoute: ExploreRoute,
   RecommendRoute: RecommendRoute,
+  AuthLoginRoute: AuthLoginRoute,
+  AuthSignupRoute: AuthSignupRoute,
+  AuthVerifyRoute: AuthVerifyRoute,
   CommunitiesIdRoute: CommunitiesIdRoute,
   ItemIdRoute: ItemIdRoute,
   CommunitiesIndexRoute: CommunitiesIndexRoute,
