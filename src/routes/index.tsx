@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Search, BookOpen, Clapperboard, Tv, Smile, Headphones } from "lucide-react";
+import { Search, BookOpen, Clapperboard } from "lucide-react";
 import { Asterisk, SketchDivider, SketchPlaceholder } from "@/components/sketch";
 
 export const Route = createFileRoute("/")({
