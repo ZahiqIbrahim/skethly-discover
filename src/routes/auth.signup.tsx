@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { register } from "@/lib/auth-api";
 
 export const Route = createFileRoute("/auth/signup")({
   head: () => ({
@@ -27,17 +27,7 @@ function SignupPage() {
     try {
       if (username.trim().length < 3) throw new Error("Username must be at least 3 characters.");
       if (password.length < 6) throw new Error("Password must be at least 6 characters.");
-
-      const { error: signUpError } = await supabase.auth.signUp({
-        email: email.trim(),
-        password,
-        options: {
-          data: { username: username.trim() },
-          emailRedirectTo: `${window.location.origin}/`,
-        },
-      });
-      if (signUpError) throw signUpError;
-
+      await register({ username: username.trim(), email: email.trim(), password });
       navigate({ to: "/auth/verify", search: { email: email.trim() } });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong.");

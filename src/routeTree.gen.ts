@@ -18,6 +18,7 @@ import { Route as ItemIdRouteImport } from './routes/item.$id'
 import { Route as CommunitiesIdRouteImport } from './routes/communities.$id'
 import { Route as AuthVerifyRouteImport } from './routes/auth.verify'
 import { Route as AuthSignupRouteImport } from './routes/auth.signup'
+import { Route as AuthResetRouteImport } from './routes/auth.reset'
 import { Route as AuthLoginRouteImport } from './routes/auth.login'
 
 const RecommendRoute = RecommendRouteImport.update({
@@ -65,6 +66,11 @@ const AuthSignupRoute = AuthSignupRouteImport.update({
   path: '/auth/signup',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthResetRoute = AuthResetRouteImport.update({
+  id: '/auth/reset',
+  path: '/auth/reset',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthLoginRoute = AuthLoginRouteImport.update({
   id: '/auth/login',
   path: '/auth/login',
@@ -77,6 +83,7 @@ export interface FileRoutesByFullPath {
   '/explore': typeof ExploreRoute
   '/recommend': typeof RecommendRoute
   '/auth/login': typeof AuthLoginRoute
+  '/auth/reset': typeof AuthResetRoute
   '/auth/signup': typeof AuthSignupRoute
   '/auth/verify': typeof AuthVerifyRoute
   '/communities/$id': typeof CommunitiesIdRoute
@@ -89,6 +96,7 @@ export interface FileRoutesByTo {
   '/explore': typeof ExploreRoute
   '/recommend': typeof RecommendRoute
   '/auth/login': typeof AuthLoginRoute
+  '/auth/reset': typeof AuthResetRoute
   '/auth/signup': typeof AuthSignupRoute
   '/auth/verify': typeof AuthVerifyRoute
   '/communities/$id': typeof CommunitiesIdRoute
@@ -102,6 +110,7 @@ export interface FileRoutesById {
   '/explore': typeof ExploreRoute
   '/recommend': typeof RecommendRoute
   '/auth/login': typeof AuthLoginRoute
+  '/auth/reset': typeof AuthResetRoute
   '/auth/signup': typeof AuthSignupRoute
   '/auth/verify': typeof AuthVerifyRoute
   '/communities/$id': typeof CommunitiesIdRoute
@@ -116,6 +125,7 @@ export interface FileRouteTypes {
     | '/explore'
     | '/recommend'
     | '/auth/login'
+    | '/auth/reset'
     | '/auth/signup'
     | '/auth/verify'
     | '/communities/$id'
@@ -128,6 +138,7 @@ export interface FileRouteTypes {
     | '/explore'
     | '/recommend'
     | '/auth/login'
+    | '/auth/reset'
     | '/auth/signup'
     | '/auth/verify'
     | '/communities/$id'
@@ -140,6 +151,7 @@ export interface FileRouteTypes {
     | '/explore'
     | '/recommend'
     | '/auth/login'
+    | '/auth/reset'
     | '/auth/signup'
     | '/auth/verify'
     | '/communities/$id'
@@ -153,6 +165,7 @@ export interface RootRouteChildren {
   ExploreRoute: typeof ExploreRoute
   RecommendRoute: typeof RecommendRoute
   AuthLoginRoute: typeof AuthLoginRoute
+  AuthResetRoute: typeof AuthResetRoute
   AuthSignupRoute: typeof AuthSignupRoute
   AuthVerifyRoute: typeof AuthVerifyRoute
   CommunitiesIdRoute: typeof CommunitiesIdRoute
@@ -225,6 +238,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSignupRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth/reset': {
+      id: '/auth/reset'
+      path: '/auth/reset'
+      fullPath: '/auth/reset'
+      preLoaderRoute: typeof AuthResetRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth/login': {
       id: '/auth/login'
       path: '/auth/login'
@@ -241,6 +261,7 @@ const rootRouteChildren: RootRouteChildren = {
   ExploreRoute: ExploreRoute,
   RecommendRoute: RecommendRoute,
   AuthLoginRoute: AuthLoginRoute,
+  AuthResetRoute: AuthResetRoute,
   AuthSignupRoute: AuthSignupRoute,
   AuthVerifyRoute: AuthVerifyRoute,
   CommunitiesIdRoute: CommunitiesIdRoute,
@@ -250,13 +271,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

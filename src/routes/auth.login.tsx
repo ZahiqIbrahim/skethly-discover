@@ -1,7 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { getEmailForUsername } from "@/lib/auth.functions";
+import { login } from "@/lib/auth-api";
 
 export const Route = createFileRoute("/auth/login")({
   head: () => ({
@@ -25,11 +24,7 @@ function LoginPage() {
     setError(null);
     setLoading(true);
     try {
-      const { email } = await getEmailForUsername({ data: { username: username.trim() } });
-      if (!email) throw new Error("No account found with that username.");
-
-      const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
-      if (signInError) throw signInError;
+      await login({ username: username.trim(), password });
       navigate({ to: "/" });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed.");
@@ -73,10 +68,10 @@ function LoginPage() {
             {loading ? "Signing in..." : "Log in"}
           </button>
         </form>
-        <p className="font-hand text-sm text-center">
-          New here?{" "}
-          <Link to="/auth/signup" className="underline">Create an account</Link>
-        </p>
+        <div className="flex justify-between font-hand text-sm">
+          <Link to="/auth/reset" className="underline">Forgot password?</Link>
+          <Link to="/auth/signup" className="underline">Create account</Link>
+        </div>
       </div>
     </div>
   );

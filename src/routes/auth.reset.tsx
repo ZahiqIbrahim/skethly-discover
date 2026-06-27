@@ -1,26 +1,22 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { z } from "zod";
-import { resendOtp, verifyOtp } from "@/lib/auth-api";
+import { resendOtp, resetPassword } from "@/lib/auth-api";
 
-const search = z.object({ email: z.string().email().optional() });
-
-export const Route = createFileRoute("/auth/verify")({
-  validateSearch: search,
+export const Route = createFileRoute("/auth/reset")({
   head: () => ({
     meta: [
-      { title: "Verify email — Story Loom" },
-      { name: "description", content: "Enter the code we sent to your email." },
+      { title: "Reset password — Story Loom" },
+      { name: "description", content: "Reset your Story Loom password." },
     ],
   }),
-  component: VerifyPage,
+  component: ResetPage,
 });
 
-function VerifyPage() {
-  const { email: emailFromSearch } = Route.useSearch();
+function ResetPage() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState(emailFromSearch ?? "");
+  const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
+  const [newPassword, setNewPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
@@ -31,23 +27,24 @@ function VerifyPage() {
     setInfo(null);
     setLoading(true);
     try {
-      await verifyOtp({ email: email.trim(), otp: otp.trim() });
+      if (newPassword.length < 6) throw new Error("Password must be at least 6 characters.");
+      await resetPassword({ email: email.trim(), otp: otp.trim(), newPassword });
       navigate({ to: "/auth/login" });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Invalid code.");
+      setError(err instanceof Error ? err.message : "Could not reset password.");
     } finally {
       setLoading(false);
     }
   }
 
-  async function resend() {
+  async function sendOtp() {
     setError(null);
     setInfo(null);
     try {
       await resendOtp({ email: email.trim() });
-      setInfo("Code resent. Check your inbox.");
+      setInfo("OTP sent. Check your inbox.");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not resend code.");
+      setError(err instanceof Error ? err.message : "Could not send OTP.");
     }
   }
 
@@ -55,8 +52,8 @@ function VerifyPage() {
     <div className="max-w-md mx-auto px-5 py-12">
       <div className="sketch-border p-8 space-y-6">
         <div>
-          <h1 className="font-brush text-4xl">Verify email</h1>
-          <p className="font-serif italic text-sm mt-1">Enter the code we sent to your inbox.</p>
+          <h1 className="font-brush text-4xl">Reset password</h1>
+          <p className="font-serif italic text-sm mt-1">We'll email you a one-time code.</p>
         </div>
         <form onSubmit={onSubmit} className="space-y-4">
           <label className="block space-y-1">
@@ -69,8 +66,13 @@ function VerifyPage() {
               className="w-full px-3 py-2 bg-transparent border border-ink/60 rounded-md font-serif focus:outline-none focus:ring-1 focus:ring-ink"
             />
           </label>
+          <div className="flex justify-end">
+            <button type="button" onClick={sendOtp} className="font-hand text-sm underline">
+              Send OTP
+            </button>
+          </div>
           <label className="block space-y-1">
-            <span className="font-hand text-sm">Verification code</span>
+            <span className="font-hand text-sm">OTP</span>
             <input
               type="text"
               inputMode="numeric"
@@ -80,16 +82,26 @@ function VerifyPage() {
               className="w-full px-3 py-2 bg-transparent border border-ink/60 rounded-md font-serif tracking-widest focus:outline-none focus:ring-1 focus:ring-ink"
             />
           </label>
+          <label className="block space-y-1">
+            <span className="font-hand text-sm">New password</span>
+            <input
+              type="password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              autoComplete="new-password"
+              required
+              className="w-full px-3 py-2 bg-transparent border border-ink/60 rounded-md font-serif focus:outline-none focus:ring-1 focus:ring-ink"
+            />
+          </label>
           {error && <p className="text-sm text-red-700 font-serif">{error}</p>}
           {info && <p className="text-sm text-green-800 font-serif">{info}</p>}
           <button type="submit" disabled={loading} className="ink-btn-filled w-full">
-            {loading ? "Verifying..." : "Verify & continue"}
+            {loading ? "Resetting..." : "Reset password"}
           </button>
         </form>
-        <div className="flex justify-between font-hand text-sm">
-          <button type="button" onClick={resend} className="underline">Resend code</button>
+        <p className="font-hand text-sm text-center">
           <Link to="/auth/login" className="underline">Back to login</Link>
-        </div>
+        </p>
       </div>
     </div>
   );
