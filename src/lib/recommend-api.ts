@@ -1,5 +1,7 @@
-// Story Loom AI Recommendation client — talks to STORYLOOM-RECOMMEND-SERVICE.
-// Base URL is configurable via VITE_RECOMMEND_API_URL; defaults to local service.
+// Story Loom AI Recommendation client — talks to STORYLOOM-AI-RECOMMENDATION-SERVICE via the API gateway.
+// Base URL is configurable via VITE_RECOMMEND_API_URL; defaults to local gateway.
+
+import { getAccessToken, refreshAccessToken } from "./auth-api";
 
 const BASE_URL =
   (import.meta.env.VITE_RECOMMEND_API_URL as string | undefined)?.replace(/\/$/, "") ||
@@ -24,12 +26,27 @@ export type RecommendedMovie = {
   voteAverage?: number;
 };
 
-async function post<T>(path: "books" | "movies", prompt: string): Promise<T> {
-  const res = await fetch(`${BASE_URL}/${path}`, {
+async function doFetch(path: "books" | "movies", prompt: string, token: string | null) {
+  return fetch(`${BASE_URL}/${path}`, {
     method: "POST",
-    headers: { "Content-Type": "text/plain" },
+    headers: {
+      "Content-Type": "text/plain",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
     body: prompt,
   });
+}
+
+async function post<T>(path: "books" | "movies", prompt: string): Promise<T> {
+  const token = getAccessToken();
+  if (!token) throw new Error("Please log in to get recommendations.");
+
+  let res = await doFetch(path, prompt, token);
+  if (res.status === 401 || res.status === 403) {
+    const newToken = await refreshAccessToken();
+    if (!newToken) throw new Error("Your session expired. Please log in again.");
+    res = await doFetch(path, prompt, newToken);
+  }
   if (!res.ok) {
     let msg = `Request failed (${res.status})`;
     try {
