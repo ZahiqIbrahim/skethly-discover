@@ -18,11 +18,12 @@ const categories = [
 ] as const;
 
 const moods = [
-  { label: "Feeling Adventurous", art: "Mountain Sketch" },
-  { label: "In the mood for Fantasy", art: "Castle Sketch" },
-  { label: "Something Heartwarming", art: "Teacup Sketch" },
-  { label: "Need a dose of Mystery", art: "Magnifier Sketch" },
+  { label: "Feeling Adventurous", art: "Mountain Sketch", tag: "Adventure" },
+  { label: "In the mood for Fantasy", art: "Castle Sketch", tag: "Fantasy" },
+  { label: "Something Heartwarming", art: "Teacup Sketch", tag: "Heartwarming" },
+  { label: "Need a dose of Mystery", art: "Magnifier Sketch", tag: "Mystery" },
 ];
+
 
 function Index() {
   return (
