@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Search, BookOpen, Clapperboard } from "lucide-react";
+import { BookOpen, Clapperboard } from "lucide-react";
 import { Asterisk, SketchDivider, SketchPlaceholder } from "@/components/sketch";
 
 export const Route = createFileRoute("/")({
@@ -37,14 +37,6 @@ function Index() {
           <p className="font-serif text-lg max-w-md italic">
             Discover books, movies, series, anime and more — recommended just for you by AI.
           </p>
-          <div className="sketch-border flex items-center gap-2 px-4 py-2 max-w-lg bg-parchment">
-            <input
-              type="text"
-              placeholder="What do you want to explore today?"
-              className="flex-1 bg-transparent outline-none font-serif text-ink placeholder:text-ink/50 py-2"
-            />
-            <button aria-label="search" className="ink-btn-filled !p-2"><Search size={18} strokeWidth={1.5} /></button>
-          </div>
           <div className="flex gap-3 pt-2">
             <Link to="/recommend" className="ink-btn-filled"><Asterisk size={14} /> Recommend me something</Link>
             <Link to="/explore" className="ink-btn">Browse</Link>
