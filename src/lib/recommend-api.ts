@@ -3,7 +3,7 @@
 
 const BASE_URL =
   (import.meta.env.VITE_RECOMMEND_API_URL as string | undefined)?.replace(/\/$/, "") ||
-  "http://localhost:8081/recommend";
+  "http://localhost:8765/STORYLOOM-AI-RECOMMENDATION-SERVICE/recommend";
 
 export type RecommendedBook = {
   id: string | number;
