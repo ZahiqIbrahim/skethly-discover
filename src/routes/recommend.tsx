@@ -122,9 +122,6 @@ function Recommend() {
           rows={3}
           className="sketch-border w-full p-4 bg-parchment font-serif outline-none"
         />
-        <button onClick={() => setHistory("")} className="font-hand text-sm underline underline-offset-4 opacity-80">
-          Skip — just surprise me
-        </button>
       </section>
 
       <section className="space-y-3 mb-8">
