@@ -28,6 +28,7 @@ type Card = {
   meta?: string;
   cover?: string;
   type: "Book" | "Movie";
+  description?: string;
 };
 
 function bookToCard(b: CatalogBook): Card {
