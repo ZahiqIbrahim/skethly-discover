@@ -1,99 +1,133 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useRef, useState } from "react";
-import { Search, Plus, X, Upload } from "lucide-react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect, useRef, useState } from "react";
+import { Plus, X, RefreshCw, LogIn } from "lucide-react";
 import { SketchDivider, SketchPlaceholder } from "@/components/sketch";
-import { communities } from "@/lib/data";
+import { createRoom, getMyRooms, joinRoom, type Room } from "@/lib/community-api";
+import { isAuthenticated } from "@/lib/auth-api";
 
 export const Route = createFileRoute("/communities/")({
   head: () => ({
     meta: [
       { title: "Communities — Story Loom" },
-      { name: "description", content: "Find your people. Join communities of readers, watchers and dreamers." },
+      { name: "description", content: "Find your people. Join real-time chat rooms of readers, watchers and dreamers." },
     ],
   }),
   component: Communities,
 });
 
-const cats = ["All", "Books", "Movies", "Series", "Anime"] as const;
-
 function Communities() {
-  const [cat, setCat] = useState<(typeof cats)[number]>("All");
-  const [q, setQ] = useState("");
+  const navigate = useNavigate();
+  const [rooms, setRooms] = useState<Room[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [showCreate, setShowCreate] = useState(false);
-  const list = communities.filter(
-    (c) =>
-      (cat === "All" || c.category === cat) &&
-      c.name.toLowerCase().includes(q.toLowerCase()),
-  );
+  const [showJoin, setShowJoin] = useState(false);
+  const authed = isAuthenticated();
+
+  async function reload() {
+    if (!authed) { setLoading(false); return; }
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await getMyRooms();
+      setRooms(Array.isArray(data) ? data : []);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Failed to load rooms");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => { void reload(); /* eslint-disable-next-line */ }, []);
 
   return (
     <div className="max-w-6xl mx-auto px-5 pt-10">
       <div className="flex items-start justify-between gap-4 flex-wrap mb-2">
         <h1 className="font-brush text-5xl">Find your people ✦</h1>
-        <button onClick={() => setShowCreate(true)} className="ink-btn-filled flex items-center gap-2">
-          <Plus size={16} strokeWidth={1.5} /> Create community
-        </button>
+        <div className="flex gap-2 flex-wrap">
+          <button onClick={() => void reload()} className="ink-btn flex items-center gap-2" disabled={loading}>
+            <RefreshCw size={16} strokeWidth={1.5} className={loading ? "animate-spin" : ""} /> Refresh
+          </button>
+          <button onClick={() => setShowJoin(true)} className="ink-btn flex items-center gap-2">
+            <LogIn size={16} strokeWidth={1.5} /> Join by ID
+          </button>
+          <button onClick={() => setShowCreate(true)} className="ink-btn-filled flex items-center gap-2">
+            <Plus size={16} strokeWidth={1.5} /> Create community
+          </button>
+        </div>
       </div>
       <p className="font-serif italic mb-6">Conversations worth lingering over.</p>
 
-      <section className="mb-10">
-        <h2 className="font-brush text-2xl mb-4">Joined Communities</h2>
-        <div className="flex gap-4 overflow-x-auto pb-2">
-          {communities.slice(0, 4).map((c, i) => (
-            <Link
-              key={c.id}
-              to="/communities/$id"
-              params={{ id: c.id }}
-              className="sketch-border p-4 min-w-[220px] flex flex-col gap-2 lift-hover fade-up"
-              style={{ animationDelay: `${i * 60}ms` }}
-            >
-              <SketchPlaceholder label="Community Art" className="aspect-[16/9]" />
-              <h3 className="font-brush text-lg leading-tight">{c.name}</h3>
-              <p className="font-hand text-xs text-ink/80">{c.members} members · {c.posts} posts</p>
-            </Link>
-          ))}
+      {!authed && (
+        <div className="sketch-border p-6 my-8 font-serif">
+          Please <Link to="/auth/login" className="underline">log in</Link> to see your communities and chat in real time.
         </div>
-      </section>
+      )}
 
-      <SketchDivider />
+      {authed && (
+        <>
+          <SketchDivider />
+          <section className="my-8">
+            <h2 className="font-brush text-2xl mb-4">Your Communities</h2>
 
-      <div className="sketch-border flex items-center gap-2 px-4 py-2 max-w-lg bg-parchment mb-5 mt-8">
-        <Search size={18} strokeWidth={1.5} />
-        <input
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          placeholder="Search communities..."
-          className="flex-1 bg-transparent outline-none font-serif py-2"
+            {loading && <p className="font-serif italic">Loading your rooms…</p>}
+            {error && !loading && <p className="font-serif text-red-700">{error}</p>}
+            {!loading && !error && rooms.length === 0 && (
+              <p className="font-serif italic">
+                You haven't joined any rooms yet. Create one, or join by ID.
+              </p>
+            )}
+
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {rooms.map((r, i) => (
+                <Link
+                  key={r.id}
+                  to="/communities/$id"
+                  params={{ id: r.roomId }}
+                  className="sketch-border p-5 space-y-3 lift-hover fade-up block"
+                  style={{ animationDelay: `${i * 60}ms` }}
+                >
+                  <SketchPlaceholder label="Community Art" className="aspect-[16/9]" />
+                  <h3 className="font-brush text-xl leading-tight">{r.roomId}</h3>
+                  <p className="font-serif italic text-sm">{r.roomDescription}</p>
+                  <p className="font-hand text-xs text-ink/80">
+                    {r.members?.length ?? 0} members · owner @{r.owner}
+                  </p>
+                </Link>
+              ))}
+            </div>
+          </section>
+        </>
+      )}
+
+      {showCreate && (
+        <CreateCommunityModal
+          onClose={() => setShowCreate(false)}
+          onCreated={(room) => {
+            setShowCreate(false);
+            navigate({ to: "/communities/$id", params: { id: room.roomId } });
+          }}
         />
-      </div>
-
-      <div className="flex gap-2 flex-wrap mb-8">
-        {cats.map((c) => (
-          <button key={c} onClick={() => setCat(c)} className={cat === c ? "ink-btn-filled" : "ink-btn"}>{c}</button>
-        ))}
-      </div>
-
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 py-8">
-        {list.map((c, i) => (
-          <div key={c.id} className="sketch-border p-5 space-y-3 lift-hover fade-up" style={{ animationDelay: `${i * 60}ms` }}>
-            <SketchPlaceholder label="Community Art" className="aspect-[16/9]" />
-            <h3 className="font-brush text-xl leading-tight">{c.name}</h3>
-            <p className="font-serif italic text-sm">{c.description}</p>
-            <p className="font-hand text-xs text-ink/80">{c.members} members · {c.posts} posts</p>
-            <Link to="/communities/$id" params={{ id: c.id }} className="ink-btn text-sm">Join</Link>
-          </div>
-        ))}
-      </div>
-
-      {showCreate && <CreateCommunityModal onClose={() => setShowCreate(false)} />}
+      )}
+      {showJoin && (
+        <JoinCommunityModal
+          onClose={() => setShowJoin(false)}
+          onJoined={(roomId) => {
+            setShowJoin(false);
+            navigate({ to: "/communities/$id", params: { id: roomId } });
+          }}
+        />
+      )}
     </div>
   );
 }
 
-function CreateCommunityModal({ onClose }: { onClose: () => void }) {
-  const [name, setName] = useState("");
+function CreateCommunityModal({ onClose, onCreated }: { onClose: () => void; onCreated: (r: Room) => void }) {
+  const [roomId, setRoomId] = useState("");
   const [about, setAbout] = useState("");
   const [preview, setPreview] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const onPick = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -101,9 +135,18 @@ function CreateCommunityModal({ onClose }: { onClose: () => void }) {
     if (f) setPreview(URL.createObjectURL(f));
   };
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onClose();
+    setBusy(true);
+    setErr(null);
+    try {
+      const room = await createRoom({ roomId: roomId.trim(), roomDescription: about.trim() });
+      onCreated(room);
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : "Could not create room");
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
@@ -121,7 +164,7 @@ function CreateCommunityModal({ onClose }: { onClose: () => void }) {
         </div>
 
         <div>
-          <label className="font-hand text-sm block mb-1">Picture</label>
+          <label className="font-hand text-sm block mb-1">Picture (local preview only)</label>
           <button
             type="button"
             onClick={() => fileRef.current?.click()}
@@ -130,21 +173,19 @@ function CreateCommunityModal({ onClose }: { onClose: () => void }) {
             {preview ? (
               <img src={preview} alt="preview" className="w-full h-full object-cover" />
             ) : (
-              <span className="font-hand text-ink/70 flex items-center gap-2">
-                <Upload size={16} strokeWidth={1.5} /> Upload an image
-              </span>
+              <span className="font-hand text-ink/70">Upload an image</span>
             )}
           </button>
           <input ref={fileRef} type="file" accept="image/*" onChange={onPick} className="hidden" />
         </div>
 
         <div>
-          <label className="font-hand text-sm block mb-1">Name</label>
+          <label className="font-hand text-sm block mb-1">Room ID</label>
           <input
             required
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="e.g. Slow Readers Club"
+            value={roomId}
+            onChange={(e) => setRoomId(e.target.value)}
+            placeholder="e.g. fantasy-writers"
             className="sketch-border w-full px-3 py-2 bg-parchment font-serif outline-none"
           />
         </div>
@@ -161,9 +202,56 @@ function CreateCommunityModal({ onClose }: { onClose: () => void }) {
           />
         </div>
 
+        {err && <p className="text-sm text-red-700 font-serif">{err}</p>}
+
         <div className="flex justify-end gap-2 pt-2">
           <button type="button" onClick={onClose} className="ink-btn">Cancel</button>
-          <button type="submit" className="ink-btn-filled">Create</button>
+          <button type="submit" disabled={busy} className="ink-btn-filled">
+            {busy ? "Creating…" : "Create"}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+}
+
+function JoinCommunityModal({ onClose, onJoined }: { onClose: () => void; onJoined: (id: string) => void }) {
+  const [roomId, setRoomId] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setBusy(true); setErr(null);
+    try {
+      await joinRoom(roomId.trim());
+      onJoined(roomId.trim());
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : "Could not join");
+    } finally { setBusy(false); }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink/40" onClick={onClose}>
+      <form onSubmit={submit} onClick={(e) => e.stopPropagation()}
+        className="sketch-border bg-parchment paper-texture w-full max-w-md p-6 space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="font-brush text-3xl">Join a room</h2>
+          <button type="button" onClick={onClose} className="ink-btn !p-2" aria-label="close">
+            <X size={16} strokeWidth={1.5} />
+          </button>
+        </div>
+        <input
+          required value={roomId} onChange={(e) => setRoomId(e.target.value)}
+          placeholder="Room ID"
+          className="sketch-border w-full px-3 py-2 bg-parchment font-serif outline-none"
+        />
+        {err && <p className="text-sm text-red-700 font-serif">{err}</p>}
+        <div className="flex justify-end gap-2">
+          <button type="button" onClick={onClose} className="ink-btn">Cancel</button>
+          <button type="submit" disabled={busy} className="ink-btn-filled">
+            {busy ? "Joining…" : "Join"}
+          </button>
         </div>
       </form>
     </div>
